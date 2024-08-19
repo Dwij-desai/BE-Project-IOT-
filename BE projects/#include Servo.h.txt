@@ -1,0 +1,87 @@
+#include <Servo.h>
+
+Servo pickServo;
+Servo dropServo;
+int red = 0;
+int green = 0;
+int blue = 0;
+int colour = 0;
+int redcolour = 0;
+int orangecolour = 0;
+int greencolour = 0;
+int yellowcolour = 0;
+
+const int s0 = 2;
+const int s1 = 3;
+const int s2 = 4;
+const int s3 = 5;
+const int out = 6;
+
+void setup()
+{
+  Serial.begin(9600);
+  pickServo.attach(9);
+  dropServo.attach(10);
+  pinMode(s0, OUTPUT);
+  pinMode(s1, OUTPUT);
+  pinMode(s2, OUTPUT);
+  pinMode(s3, OUTPUT);
+  pinMode(out, INPUT);
+}
+
+void loop()
+{
+  digitalWrite(s2, LOW);
+  digitalWrite(s3, LOW);
+  red = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+  digitalWrite(s3, HIGH);
+  blue = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+  digitalWrite(s2, HIGH);
+  green = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+
+  if (red < 31 && red > 25 && green < 69 && green > 63)
+  {
+    colour = 1; // Red
+    dropServo.write(85);
+    delay(700);
+    redcolour++;
+    Serial.print("Red");
+    delay(200);
+    dropServo.write(0);
+  }
+
+  if (green < 56 && green > 52 && blue < 52 && blue > 47)
+  {
+    colour = 2; // Orange
+    dropServo.write(115);
+    delay(700);
+    orangecolour++;
+    Serial.print("Orange");
+    delay(200);
+    dropServo.write(0);
+  }
+
+  if (red < 36 && red > 29 && green < 33 && green > 26)
+  {
+    dropServo.write(140);
+    delay(700);
+    colour = 3; // Green
+    greencolour++;
+    Serial.print("Green");
+    delay(200);
+    dropServo.write(0);
+  }
+
+  if (red < 26 && red > 19 && green < 32 && green > 24)
+  {
+    dropServo.write(170);
+    delay(700);
+    colour = 4; // Yellow
+    yellowcolour++;
+    Serial.print("Yellow");
+    delay(200);
+    dropServo.write(0);
+  }
+
+  delay(1000); // Add a delay to prevent rapid readings
+}
